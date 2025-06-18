@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = ({ onLoginSuccess }) => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // <-- added
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,15 +17,17 @@ const LoginPage = ({ onLoginSuccess }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
-
       const res = await axios.post("http://localhost:5000/api/auth/login", form);
-
       localStorage.setItem("user", JSON.stringify(res.data));
-      setLoading(false);
+      alert("✅ Logged in successfully!");
       if (onLoginSuccess) onLoginSuccess();
+
+      navigate("/");  // <-- navigate to home
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
+    } finally {
       setLoading(false);
     }
   };
