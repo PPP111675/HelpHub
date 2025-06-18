@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const RegisterPage = ({ onRegisterSuccess }) => {
   const [form, setForm] = useState({
     name: "",
@@ -12,7 +12,7 @@ const RegisterPage = ({ onRegisterSuccess }) => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
@@ -27,13 +27,15 @@ const RegisterPage = ({ onRegisterSuccess }) => {
     }
     setLoading(true);
     try {
-
       await axios.post("http://localhost:5000/api/auth/register", form);
-      setLoading(false);
+      alert("✅ Account created successfully!"); // 🎉 success alert
+
       if (onRegisterSuccess) onRegisterSuccess();
 
+      navigate("/"); // ⬅️ redirect to login page or "/"
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
+    } finally {
       setLoading(false);
     }
   };
