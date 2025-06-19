@@ -1,7 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link,useNavigate  } from 'react-router-dom';
+import { useState} from 'react';
 const Navbar = () => {
+    const [user, setUser] = useState(null);
+    const navigate=useNavigate();
+    // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");   
+  };
+
   return (
     <nav className="bg-blue-100 shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -34,7 +43,7 @@ const Navbar = () => {
         <div className="flex space-x-3">
           <Link
             to="/login"
-            className="px-4 py-2 text-blue-700 font-semibold border border-blue-400 rounded-lg hover:bg-blue-200 transition"
+            className="px-4 py-2 text-blue-700 font-semibold border border-blue-400 rounded-lg hover:bg-blue-200 transition" onClick={handleLogout}
           >
             Logout
           </Link>
