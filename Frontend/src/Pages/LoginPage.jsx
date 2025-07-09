@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-const LoginPage = ({ onLoginSuccess }) => {
+const MySwal = withReactContent(Swal);
+
+const Login= () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // <-- added
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,14 +22,36 @@ const LoginPage = ({ onLoginSuccess }) => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", form);
-      localStorage.setItem("user", JSON.stringify(res.data));
-      alert("✅ Logged in successfully!");
-      if (onLoginSuccess) onLoginSuccess();
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-      navigate("/");  // <-- navigate to home
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Login failed");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          name: data.name,
+          email: data.email,
+          id: data.id,
+        })
+      );
+
+      MySwal.fire({
+        icon: "success",
+        title: "Logged in successfully!",
+        text: "Welcome back to HelpHub 🚀",
+        confirmButtonText: "Continue",
+      });
+
+      navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -81,4 +106,4 @@ const LoginPage = ({ onLoginSuccess }) => {
   );
 };
 
-export default LoginPage;
+export default Login;
