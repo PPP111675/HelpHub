@@ -1,16 +1,26 @@
 const express = require('express');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoute');
-const chatbotRoutes = require('./routes/chatbotRoutes');
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
-app.use(cors());
+
+app.use(cors())
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
-app.use("/api", chatbotRoutes);
+
+const authRoutes = require('./routes/authRoute');
+const chatbotRoutes = require('./routes/chatbotRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+const profileRoutes = require('./routes/profileroute');
+
+app.use('/api/auth', authRoutes);      
+app.use('/api/chatbot', chatbotRoutes);  
+app.use('/api', contactRoutes); 
+app.use('/api/profile', profileRoutes);  
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
