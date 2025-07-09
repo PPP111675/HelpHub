@@ -7,7 +7,6 @@ import About from "./Pages/About";
 import HomePage from "./Pages/HomePage";
 import Contact from "./Pages/Contact";
 function App() {
-  // For demo, pretend to check localStorage for user
   const user = JSON.parse(localStorage.getItem("user"));
   return (
     <Router>
@@ -23,3 +22,4 @@ function App() {
   );
 }
 export default App;
+
