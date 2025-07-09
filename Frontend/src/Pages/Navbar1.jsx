@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCircleUser } from "react-icons/fa6";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 const Navbar1 = () => {
   const [open, setOpen] = useState(false);
@@ -8,7 +12,7 @@ const Navbar1 = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Load user from localStorage on mount
+
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
@@ -20,7 +24,6 @@ const Navbar1 = () => {
     }
   }, []);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -31,17 +34,25 @@ const Navbar1 = () => {
     return () => window.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Logout handler
   const handleLogout = () => {
     localStorage.removeItem("user");
-    setUser(null);         // Clear state
-    navigate("/login");    // Redirect to login page
+    setUser(null);        
+    navigate("/login");   
+    MySwal.fire(
+      {
+        icon: 'success',
+        title: 'Logged out successfully!',
+        text: 'You have been logged out of HelpHub.',
+        confirmButtonText: 'OK',
+        timer: 2000,
+        timerProgressBar: true,
+      }
+    )
   };
 
   return (
     <nav className="bg-blue-100 shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo */}
         <div className="flex items-center space-x-2">
           <img
             src="https://tse3.mm.bing.net/th?id=OIP.G5Z5KqW9wN-2hH9EqFhiDQAAAA&pid=Api&P=0&h=180"
@@ -51,7 +62,6 @@ const Navbar1 = () => {
           <span className="text-blue-800 font-bold text-xl">HelpHub</span>
         </div>
 
-        {/* User dropdown */}
         {user && (
           <div className="relative" ref={dropdownRef}>
             <button onClick={() => setOpen(!open)}>
