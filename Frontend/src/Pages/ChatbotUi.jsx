@@ -34,7 +34,7 @@ useEffect(() => {
     setInput('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/chatbot/chat', {
+      const res = await fetch('https://helphub-5.onrender.com/api/chatbot/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input }),
