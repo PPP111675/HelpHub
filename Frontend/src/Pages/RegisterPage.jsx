@@ -27,7 +27,7 @@ const RegisterPage = ({ onRegisterSuccess }) => {
     }
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/register", form);
+      await axios.post("https://helphub-5.onrender.com/api/auth/register", form);
       alert("✅ Account created successfully!"); // 🎉 success alert
 
       if (onRegisterSuccess) onRegisterSuccess();
