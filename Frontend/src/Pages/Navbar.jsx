@@ -61,6 +61,7 @@ const Navbar = () => {
         name: data.name,
         email: data.email,
         universityId: data.universityId,
+        password:"",
       });
       setShowModal(true);
     } catch (err) {
@@ -71,35 +72,49 @@ const Navbar = () => {
   const handleProfileChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
+const handleUpdateProfile = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
 
-  const handleUpdateProfile = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No token found");
+    const payload = {
+      name: profile.name,
+      universityId: profile.universityId,
+    };
 
-      const res = await fetch("http://localhost:5000/api/profile/updateprofile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(profile),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-
-      MySwal.fire("✅ Updated", "Profile updated successfully!", "success");
-      setShowModal(false);
-    } catch (err) {
-      MySwal.fire("❌ Error", err.message || "Profile update failed", "error");
+    if (profile.password && profile.password.trim() !== "") {
+      payload.password = profile.password;
     }
-  };
+
+    const res = await fetch("http://localhost:5000/api/profile/updateprofile", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+
+    MySwal.fire("✅ Updated", "Profile updated successfully!", "success");
+    setProfile((prev) => ({ ...prev, password: "" }));
+    setShowModal(false);
+  } catch (err) {
+    MySwal.fire("❌ Error", err.message || "Profile update failed", "error");
+  }
+};
+
+
+      
+
 
   return (
     <>
       <nav className="bg-blue-100 shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Logo */}
           <div className="flex items-center space-x-2">
             <img
               src="https://tse3.mm.bing.net/th?id=OIP.G5Z5KqW9wN-2hH9EqFhiDQAAAA&pid=Api&P=0&h=180"
@@ -162,8 +177,9 @@ const Navbar = () => {
                   type="email"
                   name="email"
                   value={profile.email}
+                  disabled
                   onChange={handleProfileChange}
-                  className="w-full px-4 py-2 border rounded-lg border-blue-300 focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-4 py-2 border rounded-lg border-blue-300 focus:ring-2 focus:ring-blue-400" 
                 />
               </div>
               <div>
@@ -212,3 +228,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
