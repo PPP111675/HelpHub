@@ -32,18 +32,25 @@ router.get('/getprofile', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error.' });
   }
 });
-
 router.put('/updateprofile', authMiddleware, async (req, res) => {
   try {
-    const { name, universityId } = req.body;
+    const { name, universityId, password } = req.body;
 
-    const updated = await updateUserProfile(req.user.email, { name, universityId });
+    const updated = await updateUserProfile(req.user.email, {
+      name,
+      universityId,
+      password, // This can be undefined or empty, your function handles it
+    });
+    console.log("📩 Request body:", req.body);
+
     if (!updated) return res.status(400).json({ message: 'Update failed.' });
 
     res.json({ name, email: req.user.email, universityId });
   } catch (err) {
+    console.error("Update error:", err);
     res.status(500).json({ message: 'Server error.' });
   }
 });
+
 
 module.exports = router;
