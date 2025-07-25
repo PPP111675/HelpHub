@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
-const API_BASE = 'http://localhost:5005/api';
+const API_BASE = 'https://helphub-10.onrender.com/api';
 
 const instance = axios.create({ baseURL: API_BASE });
 
